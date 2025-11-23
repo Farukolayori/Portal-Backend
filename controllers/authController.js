@@ -6,7 +6,12 @@ import bcrypt from "bcryptjs";
  */
 export const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, dateStarted, role, profileImage } = req.body;
+    const { firstName, lastName, email, password, dateStarted, profileImage } = req.body;
+
+    // ✅ Validate required fields
+    if (!firstName || !lastName || !email || !password || !dateStarted) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -14,13 +19,14 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ✅ Create date object properly
     const newUser = new User({
       firstName,
       lastName,
       email,
       password: hashedPassword,
-      dateStarted,
-      role: role || 'user',
+      dateStarted: new Date(dateStarted), // Convert string to Date object
+      role: 'user',
       profileImage: profileImage || null,
     });
 
@@ -39,6 +45,7 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("Registration error:", err); // ✅ Better error logging
     res.status(500).json({ message: err.message });
   }
 };
