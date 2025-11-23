@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
  */
 export const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, dateStarted } = req.body;
+    const { firstName, lastName, email, password, dateStarted, role, profileImage } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -20,11 +20,12 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       dateStarted,
+      role: role || 'user',
+      profileImage: profileImage || null,
     });
 
     await newUser.save();
 
-    // ✅ Return safe user info only
     res.status(201).json({
       message: "Registration successful!",
       user: {
@@ -33,6 +34,8 @@ export const registerUser = async (req, res) => {
         lastName: newUser.lastName,
         email: newUser.email,
         dateStarted: newUser.dateStarted,
+        role: newUser.role,
+        profileImage: newUser.profileImage,
       },
     });
   } catch (err) {
@@ -53,7 +56,7 @@ export const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    // ✅ Return safe user info only
+    // ✅ IMPORTANT: Make sure role and profileImage are included
     res.status(200).json({
       message: "Login successful!",
       user: {
@@ -62,6 +65,8 @@ export const loginUser = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         dateStarted: user.dateStarted,
+        role: user.role, // ✅ Must include this
+        profileImage: user.profileImage, // ✅ Must include this
       },
     });
   } catch (err) {
