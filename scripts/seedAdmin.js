@@ -28,7 +28,7 @@ const seedAdmin = async () => {
     const admin = new User({
       firstName: "Ariyo",
       lastName: "Oluwapelumi",
-      email: "farukolayori69@gmail.com",
+      email: existingAdmin,
       password: hashedPassword,
       dateStarted: new Date(),
       role: "admin",
