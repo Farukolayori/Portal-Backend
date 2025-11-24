@@ -4,13 +4,15 @@ import bcrypt from "bcryptjs";
 /**
  * REGISTER USER
  */
+// In your authController.js
 export const registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password, dateStarted, profileImage } = req.body;
 
-    // ✅ Validate required fields
-    if (!firstName || !lastName || !email || !password || !dateStarted) {
-      return res.status(400).json({ message: "All fields are required" });
+    console.log("Received dateStarted:", dateStarted); // ✅ Debug
+
+    if (!dateStarted) {
+      return res.status(400).json({ message: "Date started is required" });
     }
 
     const existingUser = await User.findOne({ email });
@@ -19,13 +21,12 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Create date object properly
     const newUser = new User({
       firstName,
       lastName,
       email,
       password: hashedPassword,
-      dateStarted: new Date(dateStarted), // Convert string to Date object
+      dateStarted: new Date(dateStarted), // ✅ Convert to Date object
       role: 'user',
       profileImage: profileImage || null,
     });
@@ -45,7 +46,7 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Registration error:", err); // ✅ Better error logging
+    console.error("Registration error:", err);
     res.status(500).json({ message: err.message });
   }
 };
