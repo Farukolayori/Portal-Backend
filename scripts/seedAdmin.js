@@ -19,6 +19,11 @@ const seedAdmin = async () => {
     
     if (existingAdmin) {
       console.log("⚠️ Admin user already exists");
+      console.log("Admin details:", {
+        name: existingAdmin.firstName + " " + existingAdmin.lastName,
+        email: existingAdmin.email,
+        role: existingAdmin.role
+      });
       process.exit(0);
     }
 
@@ -28,7 +33,7 @@ const seedAdmin = async () => {
     const admin = new User({
       firstName: "Ariyo",
       lastName: "Oluwapelumi",
-      email: existingAdmin,
+      email: "mark@gmail.com", // ✅ FIXED: Use the actual email string, not existingAdmin
       password: hashedPassword,
       dateStarted: new Date(),
       role: "admin",
@@ -38,8 +43,8 @@ const seedAdmin = async () => {
     await admin.save();
     
     console.log("✅ Admin user created successfully!");
-    console.log("📧 Email: admin@ibadanpoly.edu.ng");
-    console.log("🔑 Password: Admin@2025");
+    console.log("📧 Email: mark@gmail.com");
+    console.log("🔑 Password: Olayori25");
     console.log("⚠️ Please change the password after first login!");
     
     process.exit(0);
