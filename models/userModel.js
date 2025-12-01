@@ -13,16 +13,32 @@ const userSchema = new mongoose.Schema({
     type: String, 
     required: true, 
     unique: true,
-    validate: {
-      validator: function(v) {
-        return v.toLowerCase().endsWith('@gmail.com');
-      },
-      message: 'Email must be a Gmail address (@gmail.com)'
-    }
+    lowercase: true,
+    trim: true
   },
   password: { 
     type: String, 
     required: true 
+  },
+  matricNumber: {
+    type: String,
+    unique: true,
+    sparse: true // Allows null but ensures uniqueness for non-null
+  },
+  department: {
+    type: String,
+    enum: [
+      "Computer Science",
+      "Electrical Engineering",
+      "Mechanical Engineering",
+      "Civil Engineering",
+      "Business Administration",
+      "Accounting",
+      "Mass Communication",
+      "Architecture",
+      "Estate Management",
+      "Banking and Finance"
+    ]
   },
   dateStarted: { 
     type: Date, 
@@ -35,8 +51,10 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: { 
     type: String, 
-    required: true  // ✅ Now required!
+    default: "" // Changed from required: true
   }
-}, { timestamps: true });
+}, { 
+  timestamps: true 
+});
 
 export default mongoose.model("User", userSchema);
